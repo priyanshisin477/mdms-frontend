@@ -13,6 +13,7 @@ function Dashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("");
+  const [SidebarOpen, setSidebarOpen] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -103,44 +104,51 @@ function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white flex">
-      
-      {/* Sidebar */}
-      <div className="hidden md:flex">
-        <Sidebar />
-      </div>
-  
-      {/* ✅ Main content — flex-1 div add karo */}
-      <div className="flex-1 p-4 md:p-6 min-w-0">
-        <Navbar />
-  
-        <div className="mt-6">
-          <h1 className="text-2xl md:text-4xl font-bold">
-            Welcome back, {userName} 💛
-          </h1>
-          <p className="text-gray-400 mt-2">
-            Manage your medical inventory smartly
-          </p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 text-white flex">
+    
+        {/* Sidebar */}
+        <div className={`${sidebarOpen ? "flex" : "hidden"} md:flex fixed md:relative z-50`}>
+          <Sidebar />
         </div>
-  
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-          <StatCard title="Total Products" value={products.length} />
-          <StatCard title="Low Stock" value={lowStockCount} />
-          <StatCard title="Expiring Soon" value={expiringProducts.length} />
-          <StatCard title="Inventory Value" value={`₹${inventoryValue.toLocaleString()}`} />
-        </div>
-  
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
-          <div className="xl:col-span-2">
-            <SalesChart />
+    
+        {/* Overlay — mobile pe sidebar open ho to background dark karo */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-40 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+    
+        {/* Main content */}
+        <div className="flex-1 p-4 md:p-6 min-w-0">
+          <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+    
+          <div className="mt-6">
+            <h1 className="text-2xl md:text-4xl font-bold">
+              Welcome back, {userName} 💛
+            </h1>
+            <p className="text-gray-400 mt-2">
+              Manage your medical inventory smartly
+            </p>
           </div>
-          <RecentSales />
-          <Alert data={expiringProducts ?? []} />
+    
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+            <StatCard title="Total Products" value={products.length} />
+            <StatCard title="Low Stock" value={lowStockCount} />
+            <StatCard title="Expiring Soon" value={expiringProducts.length} />
+            <StatCard title="Inventory Value" value={`₹${inventoryValue.toLocaleString()}`} />
+          </div>
+    
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-6">
+            <div className="xl:col-span-2">
+              <SalesChart />
+            </div>
+            <RecentSales />
+            <Alert data={expiringProducts ?? []} />
+          </div>
         </div>
+    
       </div>
-  
-    </div>
   );
 }
 
