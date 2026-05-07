@@ -37,7 +37,7 @@ function Dashboard() {
     } catch (err) {
       console.log("Dashboard fetch error:", err.response?.data || err.message);
 
-      // 401 aaye to login pe bhejo
+      // if 401 go back in login page 
       if (err.response?.status === 401) {
         localStorage.removeItem("token");
         window.location.href = "/login";

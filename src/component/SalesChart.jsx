@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 import {
   LineChart,
   Line,
@@ -18,8 +18,8 @@ export default function SalesChart() {
 
   const fetchChartData = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/products/sales-history",
+      const res = await API.get(
+        "/api/products/sales-history",
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -27,29 +27,29 @@ export default function SalesChart() {
         ? res.data
         : res.data.sales || res.data.data || [];
 
-      // ✅ Sales ko month ke hisaab se group karo
+      // ✅group sales accroding to month
       const monthMap = {
         0: "Jan", 1: "Feb", 2: "Mar", 3: "Apr",
         4: "May", 5: "Jun", 6: "Jul", 7: "Aug",
         8: "Sep", 9: "Oct", 10: "Nov", 11: "Dec",
       };
 
-      // Har month ka total nikalo
+      // all month total
       const grouped = {};
 
-      // Pehle sab months 0 se initialize karo
+      // initialize all month with 0 sales
       Object.values(monthMap).forEach((month) => {
         grouped[month] = 0;
       });
 
-      // Sales data group karo
+      // group sales data
       sales.forEach((s) => {
         const date = new Date(s.soldAt || s.createdAt);
         const month = monthMap[date.getMonth()];
         grouped[month] += Number(s.totalAmount || s.amount || 0);
       });
 
-      // Chart ke liye array banao
+      // create array for chart
       const formatted = Object.entries(grouped).map(([name, sales]) => ({
         name,
         sales,
@@ -68,14 +68,14 @@ export default function SalesChart() {
     fetchChartData();
   }, []);
 
-  // Total revenue calculate karo
+  // calculate total revenue
   const totalRevenue = chartData.reduce((sum, d) => sum + d.sales, 0);
 
   return (
     <div className="bg-slate-800/60 p-6 rounded-2xl mt-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">Sales Overview</h2>
-        {/* ✅ Total revenue dikhaao */}
+        {/* ✅ show total revenue */}
         <span className="text-green-400 text-sm font-medium">
           Total: ₹{totalRevenue.toLocaleString()}
         </span>
@@ -86,12 +86,11 @@ export default function SalesChart() {
           Loading chart...
         </p>
       ) : chartData.every((d) => d.sales === 0) ? (
-        // ✅ Koi sale nahi — message dikhaao
+        
         <div className="text-center py-10">
-          <p className="text-gray-400">Abhi koi sales nahi hui</p>
+          <p className="text-gray-400">No sales yet</p>
           <p className="text-gray-600 text-sm mt-1">
-            Sell karo — chart update ho jaayega!
-          </p>
+          Make a sale — chart will update!</p>
         </div>
       ) : (
         <ResponsiveContainer width="100%" height={300}>

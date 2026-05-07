@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 
 export default function RecentSales() {
   const [sales, setSales] = useState([]);
@@ -9,8 +9,8 @@ export default function RecentSales() {
 
   const fetchRecentSales = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/products/sales-history",
+      const res = await API.get(
+        "/api/products/sales-history",
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

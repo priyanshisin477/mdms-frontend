@@ -18,7 +18,7 @@ export default function Alerts() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Alerts products:", res.data); // check karo
+      console.log("Alerts products:", res.data); 
 
       const list = Array.isArray(res.data)
         ? res.data
@@ -263,7 +263,7 @@ export default function Alerts() {
                       { quantity: Number(qty) },
                       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
                     );
-                    fetchProducts(); // ✅ List refresh — card hat jaayega
+                    fetchProducts(); // ✅ refresh the list
                   } catch (err) {
                     alert("❌ " + (err.response?.data?.message || "Update failed"));
                   }
