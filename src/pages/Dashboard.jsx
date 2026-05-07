@@ -13,8 +13,7 @@ function Dashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("");
-  const [SidebarOpen, setSidebarOpen] = useState(false);
-
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem("token");
